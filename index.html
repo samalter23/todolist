@@ -1,0 +1,89 @@
+# todolist/templates
+
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>待办事项列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .btn {
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .complete-btn { background-color: #008CBA; }
+        .uncomplete-btn { background-color: #f44336; }
+        .delete-btn { background-color: #555; }
+    </style>
+</head>
+<body>
+    <h1>待办事项列表</h1>
+    
+    <form action="{{ url_for('add_todo') }}" method="post">
+        <input type="text" name="title" placeholder="输入新的待办事项" required>
+        <input type="submit" value="添加">
+    </form>
+
+    <ul>
+        {% for todo in todos %}
+            <li {% if todo.completed %}class="completed"{% endif %}>
+                <span>{{ todo.title }}</span>
+                <div>
+                    {% if todo.completed %}
+                        <span>完成时间: {{ todo.completed_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        <a href="{{ url_for('uncomplete_todo', todo_id=todo.id) }}" class="btn uncomplete-btn">未完成</a>
+                    {% else %}
+                        <a href="{{ url_for('complete_todo', todo_id=todo.id) }}" class="btn complete-btn">完成</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_todo', todo_id=todo.id) }}" class="btn delete-btn">删除</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
